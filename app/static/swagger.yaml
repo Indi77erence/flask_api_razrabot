@@ -1,0 +1,154 @@
+openapi: 3.0.0
+info:
+  title: API для управления задачами
+  version: 1.0.0
+  description: API предоставляет функциональность для работы со списком задач.
+  contact:
+    name: Kirill Artyukovskii
+paths:
+  /api/tasks:
+    get:
+      tags:
+        - tasks
+      summary: Получить все задачи
+      responses:
+        200:
+          description: Конкретная задача
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseListModel'
+    post:
+      tags:
+        - tasks
+      summary: Создать новую задачу
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+      responses:
+        200:
+          description: Созданная задача
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+  /api/tasks/{task_id}:
+    get:
+      tags:
+        - tasks
+      summary: Получить конкретную задачу
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        200:
+          description: Конкретная задача
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+
+    put:
+      tags:
+        - tasks
+      summary: Обновить конкретную задачу
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTask'
+      responses:
+        200:
+          description: Обновленная задача
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+    delete:
+      tags:
+        - tasks
+      summary: Удалить конкретную задачу
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        200:
+          description: Статус удаления
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access:
+                    type: boolean
+components:
+  schemas:
+    ResponseListModel:
+      type: array
+      items:
+        $ref: '#/components/schemas/ResponseModel'
+    ResponseModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Идентификатор задачи
+        title:
+          type: string
+          description: Название задачи
+        description:
+          type: string
+          description: Описание задачи
+        created_at:
+          type: string
+          format: date-time
+          description: Дата и время создания задачи
+        updated_at:
+          type: string
+          format: date-time
+          description: Дата и время обновления задачи
+    CreateTask:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Заголовок задачи
+          required: true
+        description:
+          type: string
+          description: Описание задачи
+          required: true
+    UpdateTask:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Заголовок задачи
+        description:
+          type: string
+          description: Описание задачи
+    DeleteTask:
+      type: object
+      properties:
+        access:
+          type: boolean
+          description: Статус удаления задачи
